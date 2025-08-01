@@ -5,47 +5,69 @@
             <nav class="mt-2"> <!--begin::Sidebar Menu-->
                 <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
 
-                    <li class="nav-item"> <a href="./docs/layout.html" class="nav-link"> <i class="nav-icon bi bi-grip-horizontal"></i>
-                            <p>Single Item</p>
-                        </a> 
+                    <li class="nav-item"> <router-link to="/dashboard" class="nav-link"> <i class="nav-icon bi bi-grip-horizontal"></i>
+                            <p>Dashboard</p>
+                    </router-link> 
                     </li>
 
                     <li class="nav-header">Separator</li>
 
-                    <li class="nav-item"> <a href="#" class="nav-link"> <i class="nav-icon bi bi-clipboard-fill"></i>
+                    <li class="nav-item"> <a href="#" class="nav-link"> <i class="nav-icon fa-solid fa-cart-shopping"></i>
                             <p>
-                                Multiple Item Options
-                                <span class="nav-badge badge text-bg-secondary me-3">6</span> <i class="nav-arrow bi bi-chevron-right"></i>
+                                Manajemen Produk <i class="nav-arrow bi bi-chevron-right"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <li class="nav-item"> <a href="./layout/unfixed-sidebar.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-                                    <p>Default Sidebar</p>
-                                </a> </li>
-                            <li class="nav-item"> <a href="./layout/fixed-sidebar.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-                                    <p>Fixed Sidebar</p>
-                                </a> </li>
-                            <li class="nav-item"> <a href="./layout/layout-custom-area.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-                                    <p>Layout <small>+ Custom Area </small></p>
-                                </a> </li>
-                            <li class="nav-item"> <a href="./layout/sidebar-mini.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-                                    <p>Sidebar Mini</p>
-                                </a> </li>
+                            <li class="nav-item"> <router-link to="/dashboard/daftar-produk" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                                    <p>Daftar</p>
+                            </router-link> </li>
+                            <li class="nav-item"> <router-link to="/dashboard/tambah-produk" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                                    <p>Tambah</p>
+                            </router-link> </li>
                             <li class="nav-item"> <a href="./layout/collapsed-sidebar.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-                                    <p>Sidebar Mini <small>+ Collapsed</small></p>
+                                    <p>Stok Item</p>
                                 </a> </li>
                             <li class="nav-item"> <a href="./layout/logo-switch.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-                                    <p>Sidebar Mini <small>+ Logo Switch</small></p>
-                                </a> </li>
-                            <li class="nav-item"> <a href="./layout/layout-rtl.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-                                    <p>Layout RTL</p>
+                                    <p>Kategori</p>
                                 </a> </li>
                         </ul>
                     </li>
 
+                    <li class="nav-item"> <a href="#" class="nav-link"> <i class="nav-icon fa-solid fa-wallet"></i>
+                            <p>
+                                Data Transaksi <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item"> <a href="./layout/unfixed-sidebar.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                                    <p>Transaksi</p>
+                                </a> </li>
+                            <li class="nav-item"> <a href="./layout/fixed-sidebar.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                                    <p>Transaksi Baru</p>
+                                </a> </li>
+                        </ul>
+                    </li>
 
-
+                    <li class="nav-item"> <a href="#" class="nav-link"> <i class="nav-icon fa-solid fa-users"></i>
+                            <p>
+                                Data Pelanggan <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item"> <a href="./layout/unfixed-sidebar.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                                    <p>Daftar Pelanggan</p>
+                                </a> </li>
+                            <li class="nav-item"> <a href="./layout/fixed-sidebar.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                                    <p>Tambah Pelanggan</p>
+                                </a> </li>
+                        </ul>
+                    </li>
     
+                    <li class="nav-item"> <a href="" class="nav-link"> <i class="nav-icon fa-solid fa-gear"></i>
+                            <p>Pengaturan</p>
+                        </a> 
+                    </li>
+
                 </ul> <!--end::Sidebar Menu-->
             </nav>
         </div> <!--end::Sidebar Wrapper-->
@@ -53,4 +75,6 @@
 </template>
 
 <script setup>
+import router from '../router';
+
 </script>
