@@ -6,6 +6,8 @@ import Login from '../views/Login.vue'
 import DashboardView from '../views/DashboardView.vue'
 import TambahProduk from '../views/products/TambahProduk.vue'
 import DaftarProduk from '../views/products/DaftarProduk.vue'
+import EditProduk from '../views/products/EditProduk.vue'
+import KategoriProduk from '../views/products/KategoriProduk.vue'
 
 const routes = [
   {
@@ -36,6 +38,18 @@ const routes = [
     path: '/dashboard/daftar-produk',
     name: 'Daftar Produk',
     component: DaftarProduk,
+    meta: { layout: 'app', requiresAuth: true }
+  },
+  {
+    path: '/dashboard/edit-produk/:id',
+    name: 'Edit Produk',
+    component: EditProduk,
+    meta: { layout: 'app', requiresAuth: true }
+  },
+  {
+    path: '/dashboard/kategori-produk/',
+    name: 'Kategori Produk',
+    component: KategoriProduk,
     meta: { layout: 'app', requiresAuth: true }
   }
 ]

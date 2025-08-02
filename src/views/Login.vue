@@ -42,6 +42,7 @@
 
 <script setup>
 import { ref, watchEffect } from 'vue'
+import api from '../axios'
 import { useRoute, useRouter } from 'vue-router'  // ✅ tambahkan useRoute & useRouter
 
 const route = useRoute()
@@ -64,31 +65,24 @@ watchEffect(() => {
   }
 })
 
+
   async function login() {
     error.value = false
     success.value = false
 
-      try {
-        const res = await fetch('http://localhost/login_api_lumen/public/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: email.value,
-            password: password.value
-          })
-        })
+    try {
+      const res = await api.post('/login', {
+        email: email.value,
+        password: password.value
+      })
 
-        const data = await res.json()
-
-      if (!res.ok) {
-        throw new Error(data.message || 'Login gagal')
-      }
+      const data = res.data
 
       if (data.user && data.token) {
+        // Simpan user & token ke localStorage
         localStorage.setItem('user', JSON.stringify(data.user))
         localStorage.setItem('token', data.token)
+
         success.value = true
         successMessage.value = `Selamat datang, ${data.user.name}`
 
@@ -100,8 +94,12 @@ watchEffect(() => {
 
     } catch (err) {
       console.error(err)
+
+      // Tangkap error dari response jika ada
+      const msg = err.response?.data?.message || err.message || 'Terjadi kesalahan koneksi'
+
       error.value = true
-      errorMessage.value = err.message || 'Terjadi kesalahan koneksi'
+      errorMessage.value = msg
     }
   }
 </script>

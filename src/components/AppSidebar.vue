@@ -27,9 +27,9 @@
                             <li class="nav-item"> <a href="./layout/collapsed-sidebar.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
                                     <p>Stok Item</p>
                                 </a> </li>
-                            <li class="nav-item"> <a href="./layout/logo-switch.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                            <li class="nav-item"> <router-link to="/dashboard/kategori-produk" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
                                     <p>Kategori</p>
-                                </a> </li>
+                            </router-link> </li>
                         </ul>
                     </li>
 
