@@ -101,7 +101,7 @@ function confirmLogout() {
   if (userConfirm) {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
-    router.push({ name: 'Login', query: { logout: 'true' } })
+    router.push({ name: 'LoginPage', query: { logout: 'true' } })
   }
 }
 </script>

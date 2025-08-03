@@ -168,7 +168,7 @@
 
     const getKategori = async () => {
         try {
-            const res = await axios.get('http://localhost/login_api_lumen/public/api/kategori-produk', {
+            const res = await axios.get('http://localhost/login_api_lumen/public/api/kategori-produk/all', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

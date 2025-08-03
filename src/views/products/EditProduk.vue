@@ -111,167 +111,134 @@
 </template>
 
 <script setup>
-  import {
-    ref,
-    onMounted
-  } from 'vue'
-  import {
-    useRoute
-  } from 'vue-router'
-  import axios from 'axios'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import axios from '@/utils/axiosInstance' // <--- PAKAI axiosInstance custom
 
-  // Routing & token
-  const route = useRoute()
-  const produkId = route.params.id
-  const token = localStorage.getItem('token')
+const route = useRoute()
+const produkId = route.params.id
 
-  // State
-  const form = ref({
-    nama_produk: '',
-    deskripsi: '',
-    harga: '',
-    stok: '',
-    kategori_id: '',
-    satuan_id: ''
-  })
+const form = ref({
+  nama_produk: '',
+  deskripsi: '',
+  harga: '',
+  stok: '',
+  kategori_id: '',
+  satuan_id: ''
+})
 
-  const errors = ref({})
-  const successMessage = ref('')
-  const errorMessage = ref('')
-  const kategoriList = ref([])
-  const satuanList = ref([])
-  const showKategoriModal = ref(false)
-  const newKategori = ref('')
-  // Validasi manual
-  const validateForm = () => {
-    errors.value = {}
+const errors = ref({})
+const successMessage = ref('')
+const errorMessage = ref('')
+const kategoriList = ref([])
+const satuanList = ref([])
+const showKategoriModal = ref(false)
+const newKategori = ref('')
 
-    if (!form.value.nama_produk) {
-      errors.value.nama_produk = 'Nama produk wajib diisi.'
-    }
-    if (!form.value.kategori_id) {
-      errors.value.kategori_id = 'Pilih kategori terlebih dahulu.'
-    }
-    if (!form.value.harga || form.value.harga <= 0) {
-      errors.value.harga = 'Harga harus lebih dari 0.'
-    }
-    if (!form.value.stok || form.value.stok < 0) {
-      errors.value.stok = 'Stok tidak boleh kosong.'
-    }
-    if (!form.value.satuan_id) {
-      errors.value.satuan_id = 'Pilih satuan terlebih dahulu.'
-    }
+const validateForm = () => {
+  errors.value = {}
 
-    return Object.keys(errors.value).length === 0
+  if (!form.value.nama_produk) {
+    errors.value.nama_produk = 'Nama produk wajib diisi.'
+  }
+  if (!form.value.kategori_id) {
+    errors.value.kategori_id = 'Pilih kategori terlebih dahulu.'
+  }
+  if (!form.value.harga || form.value.harga <= 0) {
+    errors.value.harga = 'Harga harus lebih dari 0.'
+  }
+  if (!form.value.stok || form.value.stok < 0) {
+    errors.value.stok = 'Stok tidak boleh kosong.'
+  }
+  if (!form.value.satuan_id) {
+    errors.value.satuan_id = 'Pilih satuan terlebih dahulu.'
   }
 
-  // Load data kategori dan satuan
-  const getKategori = async () => {
-    try {
-      const res = await axios.get('http://localhost/login_api_lumen/public/api/kategori-produk', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      kategoriList.value = res.data.data
-    } catch (err) {
-      console.error('Gagal memuat kategori:', err)
+  return Object.keys(errors.value).length === 0
+}
+
+const getKategori = async () => {
+  try {
+    const res = await axios.get('/kategori-produk/all')
+    kategoriList.value = res.data.data
+  } catch (err) {
+    console.error('Gagal memuat kategori:', err)
+  }
+}
+
+const getSatuan = async () => {
+  try {
+    const res = await axios.get('/satuan-produk')
+    satuanList.value = res.data.data
+  } catch (err) {
+    console.error('Gagal memuat satuan:', err)
+  }
+}
+
+const getProduk = async () => {
+  try {
+    const res = await axios.get(`/produk/${produkId}`)
+    const data = res.data
+    form.value = {
+      nama_produk: data.nama_produk,
+      deskripsi: data.deskripsi || '',
+      harga: data.harga,
+      stok: data.stok,
+      kategori_id: data.kategori_id,
+      satuan_id: data.satuan_id
+    }
+  } catch (err) {
+    console.error('Gagal memuat produk:', err)
+    errorMessage.value = '❌ Gagal memuat data produk.'
+  }
+}
+
+const submitForm = async () => {
+  if (!validateForm()) return
+
+  try {
+    await axios.put(`/produk/${produkId}`, form.value)
+    successMessage.value = '✅ Produk berhasil diperbarui!'
+    errorMessage.value = ''
+  } catch (err) {
+    console.error('Gagal update produk:', err)
+    successMessage.value = ''
+    errorMessage.value = '❌ Gagal menyimpan perubahan.'
+  }
+}
+
+const tambahKategori = async () => {
+  if (!newKategori.value.trim()) return alert('Nama kategori tidak boleh kosong.')
+
+  try {
+    const res = await axios.post('/kategori-produk', {
+      nama_kategori: newKategori.value
+    })
+
+    kategoriList.value.push(res.data)
+    form.value.kategori_id = res.data.id
+
+    newKategori.value = ''
+    showKategoriModal.value = false
+
+    alert('✅ Kategori berhasil ditambahkan!')
+  } catch (err) {
+    console.error(err)
+    if (err.response?.data?.errors?.nama_kategori) {
+      alert('❌ ' + err.response.data.errors.nama_kategori[0])
+    } else {
+      alert('❌ Gagal menambahkan kategori.')
     }
   }
+}
 
-  const getSatuan = async () => {
-    try {
-      const res = await axios.get('http://localhost/login_api_lumen/public/api/satuan-produk', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      satuanList.value = res.data.data
-    } catch (err) {
-      console.error('Gagal memuat satuan:', err)
-    }
-  }
-
-  // Load data produk berdasarkan ID
-  const getProduk = async () => {
-    try {
-      const res = await axios.get(`http://localhost/login_api_lumen/public/api/produk/${produkId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const data = res.data
-      form.value = {
-        nama_produk: data.nama_produk,
-        deskripsi: data.deskripsi || '',
-        harga: data.harga,
-        stok: data.stok,
-        kategori_id: data.kategori_id,
-        satuan_id: data.satuan_id
-      }
-    } catch (err) {
-      console.error('Gagal memuat produk:', err)
-      errorMessage.value = '❌ Gagal memuat data produk.'
-    }
-  }
-
-  // Submit form update
-  const submitForm = async () => {
-    if (!validateForm()) return
-
-    try {
-      await axios.put(`http://localhost/login_api_lumen/public/api/produk/${produkId}`, form.value, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      successMessage.value = '✅ Produk berhasil diperbarui!'
-      errorMessage.value = ''
-    } catch (err) {
-      console.error('Gagal update produk:', err)
-      successMessage.value = ''
-      errorMessage.value = '❌ Gagal menyimpan perubahan.'
-    }
-  }
-
-  const tambahKategori = async () => {
-    if (!newKategori.value.trim()) return alert('Nama kategori tidak boleh kosong.')
-
-    try {
-      const res = await axios.post('http://localhost/login_api_lumen/public/api/kategori-produk', {
-        nama_kategori: newKategori.value
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      // Tambahkan ke list dan pilih kategori baru
-      kategoriList.value.push(res.data)
-      form.value.kategori_id = res.data.id
-
-      // Reset form modal
-      newKategori.value = ''
-      showKategoriModal.value = false
-
-      alert('✅ Kategori berhasil ditambahkan!')
-    } catch (err) {
-      console.error(err)
-      if (err.response ?.data?.errors ?.nama_kategori) {
-        alert('❌ ' + err.response.data.errors.nama_kategori[0])
-      } else {
-        alert('❌ Gagal menambahkan kategori.')
-      }
-    }
-  }
-
-  // Init on mount
-  onMounted(() => {
-    getKategori()
-    getSatuan()
-    getProduk()
-  })
+onMounted(() => {
+  getKategori()
+  getSatuan()
+  getProduk()
+})
 </script>
+
 
 <style scoped>
   .invalid-feedback {

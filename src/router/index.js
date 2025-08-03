@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
-import Login from '../views/Login.vue'
+
 import DashboardView from '../views/DashboardView.vue'
 import TambahProduk from '../views/products/TambahProduk.vue'
 import DaftarProduk from '../views/products/DaftarProduk.vue'
@@ -12,15 +12,13 @@ import KategoriProduk from '../views/products/KategoriProduk.vue'
 const routes = [
   {
     path: '/',
-    name: 'Login',
-    component: Login,
-    meta: { layout: 'blank' }
+    redirect: '/login' // ✅ Redirect langsung ke login
   },
   {
     path: '/login',
-    name: 'LoginPage',
-    component: Login,
-    meta: { layout: 'blank' }
+    name: 'LoginPage', // ✅ Gunakan satu nama unik
+    component: () => import('../views/Login.vue'),
+    meta: { layout: 'app' }
   },
   {
     path: '/dashboard',
@@ -70,8 +68,10 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = !!token
 
   if (to.meta.requiresAuth && !isAuthenticated) {
+    // jika menuju route yang perlu login tapi belum login
     next({ name: 'LoginPage', query: { forced: 'true' } })
-  } else if (to.name === 'Login' && isAuthenticated) {
+  } else if (to.name === 'LoginPage' && isAuthenticated) {
+    // jika menuju login tapi sudah login, arahkan ke dashboard
     next({ name: 'Dashboard' })
   } else {
     next()

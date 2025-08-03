@@ -2,10 +2,10 @@
 <template>
   <div class="login-page bg-body-secondary">
     <div class="login-box">
-      <div class="login-logo"> <a href="#"><b>Admin</b>LTE</a> </div>
+      <div class="login-logo"> <a href="#"><b>cnPOS</b>APP</a> </div>
       <div class="card">
         <div class="card-body login-card-body">
-          <p class="login-box-msg">Sign in to start your session</p>
+          <p class="login-box-msg">Masuk Untuk Menggunakan Aplikasi</p>
 
           <div v-if="error" class="alert alert-danger mt-3">{{ errorMessage }}</div>
           <div v-if="success" class="alert alert-success mt-3">{{ successMessage }}</div>
@@ -43,10 +43,7 @@
 <script setup>
 import { ref, watchEffect } from 'vue'
 import api from '../axios'
-import { useRoute, useRouter } from 'vue-router'  // ✅ tambahkan useRoute & useRouter
-
-const route = useRoute()
-const router = useRouter()
+import { useRoute, useRouter } from 'vue-router'
 
 const email = ref('')
 const password = ref('')
@@ -54,6 +51,9 @@ const error = ref(false)
 const errorMessage = ref('')
 const success = ref(false)
 const successMessage = ref('')
+
+const route = useRoute()
+const router = useRouter()
 
 watchEffect(() => {
   if (route.query.logout === 'true') {
@@ -65,41 +65,37 @@ watchEffect(() => {
   }
 })
 
+async function login() {
+  error.value = false
+  success.value = false
 
-  async function login() {
-    error.value = false
-    success.value = false
+  try {
+    const res = await api.post('/login', {
+      email: email.value,
+      password: password.value
+    })
 
-    try {
-      const res = await api.post('/login', {
-        email: email.value,
-        password: password.value
-      })
+    const data = res.data
 
-      const data = res.data
+    if (data.user && data.token && data.refresh_token) {
+      // Simpan user & token ke localStorage
+      localStorage.setItem('user', JSON.stringify(data.user))
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('refresh_token', data.refresh_token)
 
-      if (data.user && data.token) {
-        // Simpan user & token ke localStorage
-        localStorage.setItem('user', JSON.stringify(data.user))
-        localStorage.setItem('token', data.token)
+      success.value = true
+      successMessage.value = `Selamat datang, ${data.user.name}`
 
-        success.value = true
-        successMessage.value = `Selamat datang, ${data.user.name}`
-
-        // Redirect ke dashboard
-        location.href = '/dashboard'
-      } else {
-        throw new Error('Data tidak lengkap dari server')
-      }
-
-    } catch (err) {
-      console.error(err)
-
-      // Tangkap error dari response jika ada
-      const msg = err.response?.data?.message || err.message || 'Terjadi kesalahan koneksi'
-
-      error.value = true
-      errorMessage.value = msg
+      // Gunakan router.push untuk navigasi yang lebih baik
+      await router.push('/dashboard')
+    } else {
+      throw new Error('Data tidak lengkap dari server')
     }
+  } catch (err) {
+    console.error(err)
+    const msg = err.response?.data?.message || err.message || 'Terjadi kesalahan koneksi'
+    error.value = true
+    errorMessage.value = msg
   }
+}
 </script>
