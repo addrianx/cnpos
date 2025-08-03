@@ -5,29 +5,29 @@
             <nav class="mt-2"> <!--begin::Sidebar Menu-->
                 <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
 
-                    <li class="nav-item"> <router-link to="/dashboard" class="nav-link"> <i class="nav-icon bi bi-grip-horizontal"></i>
+                    <li class="nav-item" :class="{ 'menu-open': isDashboardActive, 'active': isDashboardActive }"> <router-link to="/dashboard" class="nav-link" exact-active-class="active"> <i class="nav-icon bi bi-grip-horizontal"></i>
                             <p>Dashboard</p>
                     </router-link> 
                     </li>
 
                     <li class="nav-header">Separator</li>
 
-                    <li class="nav-item"> <a href="#" class="nav-link"> <i class="nav-icon fa-solid fa-cart-shopping"></i>
+                    <li class="nav-item" :class="{ 'menu-open': isManajemenProdukActive, 'active': isManajemenProdukActive }"> <a href="#" class="nav-link"> <i class="nav-icon fa-solid fa-cart-shopping"></i>
                             <p>
                                 Manajemen Produk <i class="nav-arrow bi bi-chevron-right"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            <li class="nav-item"> <router-link to="/dashboard/daftar-produk" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                            <li class="nav-item"> <router-link to="/dashboard/daftar-produk" class="nav-link" exact-active-class="active"> <i class="nav-icon bi bi-circle"></i>
                                     <p>Daftar</p>
                             </router-link> </li>
-                            <li class="nav-item"> <router-link to="/dashboard/tambah-produk" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                            <li class="nav-item"> <router-link to="/dashboard/tambah-produk" class="nav-link" exact-active-class="active"> <i class="nav-icon bi bi-circle"></i>
                                     <p>Tambah</p>
                             </router-link> </li>
                             <li class="nav-item"> <a href="./layout/collapsed-sidebar.html" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
                                     <p>Stok Item</p>
                                 </a> </li>
-                            <li class="nav-item"> <router-link to="/dashboard/kategori-produk" class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+                            <li class="nav-item"> <router-link to="/dashboard/kategori-produk" class="nav-link" exact-active-class="active"> <i class="nav-icon bi bi-circle"></i>
                                     <p>Kategori</p>
                             </router-link> </li>
                         </ul>
@@ -75,6 +75,28 @@
 </template>
 
 <script setup>
-import router from '../router';
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
+
+const route = useRoute();
+
+// Reusable checker function
+const isMenuActive = (paths, exact = false) => {
+  return computed(() =>
+    paths.some((p) => exact ? route.path === p : route.path.startsWith(p))
+  );
+};
+
+const isDashboardActive = isMenuActive(['/dashboard'], true); // pakai exact match
+
+const manajemenProdukRoutes = [
+  '/dashboard/daftar-produk',
+  '/dashboard/tambah-produk',
+  '/dashboard/kategori-produk'
+];
+
+
+// Hasil computed untuk menu ini
+const isManajemenProdukActive = isMenuActive(manajemenProdukRoutes);
 
 </script>

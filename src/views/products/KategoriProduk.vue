@@ -111,8 +111,6 @@ const fetchKategori = async () => {
       }
     )
 
-    console.log('📦 Respon kategori:', res.data)
-
     // Backend pagination pakai struktur res.data.data
     if (res.data && res.data.data) {
       kategoriList.value = res.data.data

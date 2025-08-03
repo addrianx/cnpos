@@ -173,7 +173,7 @@
                     Authorization: `Bearer ${token}`
                 }
             })
-            kategoriList.value = res.data
+            kategoriList.value = res.data.data
         } catch (err) {
             console.error('Gagal memuat kategori:', err)
         }
